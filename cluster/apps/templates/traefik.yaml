@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.slack: argocd-notifications
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: {{ .Values.spec.destination.server }}
+    namespace: traefik
+  project: default
+  source:
+    repoURL: {{ .Values.spec.source.repoURL }}
+    path: {{ .Values.spec.source.repoPath }}/workloads/traefik
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
